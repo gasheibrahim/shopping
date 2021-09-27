@@ -19,7 +19,7 @@ if(isset($_POST['submit']))
 	$productpricebd=$_POST['productpricebd'];
 	$quantity=$_POST['quantity'];
 	$productdescription=$_POST['productDescription'];
-	$productscharge=$_POST['productShippingcharge'];
+	// $productscharge=$_POST['productShippingcharge'];
 	$productavailability=$_POST['productAvailability'];
 	$productimage1=$_FILES["productimage1"]["name"];
 	$productimage2=$_FILES["productimage2"]["name"];
@@ -36,7 +36,7 @@ if(!is_dir($dir)){
 	move_uploaded_file($_FILES["productimage1"]["tmp_name"],"../productimages/$productid/".$_FILES["productimage1"]["name"]);
 	move_uploaded_file($_FILES["productimage2"]["tmp_name"],"../productimages/$productid/".$_FILES["productimage2"]["name"]);
 	move_uploaded_file($_FILES["productimage3"]["tmp_name"],"../productimages/$productid/".$_FILES["productimage3"]["name"]);
-$sql=mysqli_query($con,"insert into products(category,subCategory,productName,productCompany,productPrice,productDescription,shippingCharge,productAvailability,productImage1,productImage2,productImage3,productPriceBeforeDiscount,quantity) values('$category','$subcat','$productname','$productcompany','$productprice','$productdescription','$productscharge','$productavailability','$productimage1','$productimage2','$productimage3','$productpricebd','$quantity')");
+$sql=mysqli_query($con,"insert into products(category,subCategory,productName,productCompany,productPrice,productDescription,productAvailability,productImage1,productImage2,productImage3,productPriceBeforeDiscount,quantity) values('$category','$subcat','$productname','$productcompany','$productprice','$productdescription','$productavailability','$productimage1','$productimage2','$productimage3','$productpricebd','$quantity')");
 $_SESSION['msg']="Product Inserted Successfully !!";
 
 }
@@ -181,12 +181,12 @@ while($row=mysqli_fetch_array($query))
 </div>
 </div>
 
-<div class="control-group">
+<!-- <div class="control-group">
 <label class="control-label" for="basicinput">Product Shipping Charge</label>
 <div class="controls">
 <input type="text"    name="productShippingcharge"  placeholder="Enter Product Shipping Charge" class="span8 tip" required>
 </div>
-</div>
+</div> -->
 
 <div class="control-group">
 <label class="control-label" for="basicinput">Product Availability</label>

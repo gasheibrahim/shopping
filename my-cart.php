@@ -164,7 +164,6 @@ if(!empty($_SESSION['cart'])){
 			
 					<th class="cart-qty item">Quantity</th>
 					<th class="cart-sub-total item">Price Per KG</th>
-					<th class="cart-sub-total item">Shipping Charge</th>
 					<th class="cart-total last-item">Grandtotal</th>
 					<th class="cart-total last-item">Update</th>
 				</tr>
@@ -175,7 +174,7 @@ if(!empty($_SESSION['cart'])){
 						<div class="shopping-cart-btn">
 							<span class="">
 								<a href="index.php" class="btn btn-upper btn-primary outer-left-xs">Continue Shopping</a>
-								
+								<p style="float:right;font-weight:bold;font-size:15px;">Shipping Charge of 10000 Rwf added </p>
 							</span>
 						</div><!-- /.shopping-cart-btn -->
 					</td>
@@ -239,8 +238,6 @@ $num=mysqli_num_rows($rt);
 			              </div>
 		            </td>
 					<td class="cart-product-sub-total"><span class="cart-sub-total-price"><?php echo "RFW"." ".$row['productPrice']; ?>.00</td>
-<td class="cart-product-sub-total"><span class="cart-sub-total-price"><?php echo "RFW"." ".number_format($row['shippingCharge'],1); ?></span></td>
-
 					<td class="cart-product-grand-total"><span class="cart-grand-total-price"><?php echo ($_SESSION['cart'][$row['id']]['quantity']*$row['productPrice']+$row['shippingCharge']); ?>.00</span></td>
 					<td>
 					 <!-- <a href="my-cart.php?id=<?php echo $row['id']?>&del=delete" class="btn btn-upper btn-primary pull-right outer-right-xs"><i class="glyphicon glyphicon-edit"></i></a> -->
