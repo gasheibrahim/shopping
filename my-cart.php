@@ -2,7 +2,7 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if(isset($_POST['submit'])){
+if(isset($_POST['update'])){
 		if(!empty($_SESSION['cart'])){
 		foreach($_POST['quantity'] as $key => $val){
 			if($val==0){
@@ -24,7 +24,7 @@ if(!empty($_SESSION['cart'])){
 			
 				unset($_SESSION['cart'][$key]);
 		}
-			echo "<script>alert('Your Cart has been Removed');</script>";
+			echo "<script>alert('Your Cart has been Deleted');</script>";
 	}
 }
 // code for insert product in order table
@@ -66,53 +66,10 @@ header('location:payment-method.php');
 echo "<script>alert('Shipping Address has been updated');</script>";
 		}
 	}
+
 ?>
 <?php
-	if ($_SERVER["REQUEST_METHOD"] == "POST") 
-	{
-		if(empty($_POST["shippingaddress"])){
-			echo ("<script LANGUAGE='JavaScript'>
-			window.alert('shipping address is required, Try Again!!!');
-			window.location.href='my-cart.php';
-			</script>");   
-		}
-		else {
-			$saddress = test_input($_POST["shippingaddress"]);
-		}
-		if(empty($_POST["shippingstate"])){
-			echo ("<script LANGUAGE='JavaScript'>
-			window.alert('shipping state is required, Try Again!!!');
-			window.location.href='my-cart.php';
-			</script>");   
-		}
-		else {
-			$sstate = test_input($_POST["shippingstate"]);
-		}
-		if(empty($_POST["shippingcity"])){
-			echo ("<script LANGUAGE='JavaScript'>
-			window.alert('shipping city is required, Try Again!!!');
-			window.location.href='my-cart.php';
-			</script>");   
-		}
-		else {
-			$scity = test_input($_POST["shippingcity"]);
-		}
-		if(empty($_POST["shippingpincode"])){
-			echo ("<script LANGUAGE='JavaScript'>
-			window.alert('shipping pincode is required, Try Again!!!');
-			window.location.href='my-cart.php';
-			</script>");   
-		}
-		else {
-			$spincode = test_input($_POST["shippingpincode"]);
-		}
-	}
-	function test_input($data) {
-		$data = trim($data);
-		$data = stripslashes($data);
-		$data = htmlspecialchars($data);
-		return $data;
-	}
+
 ?>
 
 <!DOCTYPE html>
@@ -209,7 +166,7 @@ if(!empty($_SESSION['cart'])){
 					<th class="cart-sub-total item">Price Per KG</th>
 					<th class="cart-sub-total item">Shipping Charge</th>
 					<th class="cart-total last-item">Grandtotal</th>
-					<th class="cart-total last-item">Action</th>
+					<th class="cart-total last-item">Update</th>
 				</tr>
 			</thead><!-- /thead -->
 			<tfoot>
@@ -218,7 +175,7 @@ if(!empty($_SESSION['cart'])){
 						<div class="shopping-cart-btn">
 							<span class="">
 								<a href="index.php" class="btn btn-upper btn-primary outer-left-xs">Continue Shopping</a>
-								<!-- <input type="submit" name="submit" value="Update shopping cart" class="btn btn-upper btn-primary pull-right outer-right-xs"> -->
+								
 							</span>
 						</div><!-- /.shopping-cart-btn -->
 					</td>
@@ -231,6 +188,7 @@ if(!empty($_SESSION['cart'])){
 			foreach($_SESSION['cart'] as $id => $value){
 			$sql .=$id. ",";
 			}
+			echo count($_SESSION['cart']); 
 			$sql=substr($sql,0,-1) . ") ORDER BY id ASC";
 			$query = mysqli_query($con,$sql);
 			$totalprice=0;
@@ -246,7 +204,7 @@ if(!empty($_SESSION['cart'])){
 //print_r($_SESSION['pid'])=$pdtid;exit;
 	?>
 
-				<tr>
+				<tr id="tr<?php echo $row['id'] ?>">
 					<td class="romove-item"><input type="checkbox" name="remove_code[]" value="<?php echo htmlentities($row['id']);?>" /></td>
 					<td class="cart-image">
 						<a class="entry-thumbnail" href="#">
@@ -277,15 +235,16 @@ $num=mysqli_num_rows($rt);
 					</td>
 					<td class="cart-product-quantity">
 						<div class="quant-input">
-				             <input type="text" value="" name="quantity[<?php echo $row['id']; ?>]" style="width:10rem;" placeholder="KG">
+				             <input class="chg" data-sh="<?php echo $row['shippingCharge'];?>" data-up="<?php echo $row['productPrice'];?>" data-id="<?php echo $row['id'] ?>" type="number" value="<?php echo($_SESSION['cart'][$key]['quantity']) ?>" name="quantity[<?php echo $row['id']; ?>]" style="width:10rem;" placeholder="KG">
 			              </div>
 		            </td>
 					<td class="cart-product-sub-total"><span class="cart-sub-total-price"><?php echo "RFW"." ".$row['productPrice']; ?>.00</td>
-<td class="cart-product-sub-total"><span class="cart-sub-total-price"><?php echo "RFW"." ".$row['shippingCharge']; ?>.00</span></td>
+<td class="cart-product-sub-total"><span class="cart-sub-total-price"><?php echo "RFW"." ".number_format($row['shippingCharge'],1); ?></span></td>
 
 					<td class="cart-product-grand-total"><span class="cart-grand-total-price"><?php echo ($_SESSION['cart'][$row['id']]['quantity']*$row['productPrice']+$row['shippingCharge']); ?>.00</span></td>
 					<td>
-					 <button type="submit" class="btn btn-primary" name="submit">Update</button>
+					 <!-- <a href="my-cart.php?id=<?php echo $row['id']?>&del=delete" class="btn btn-upper btn-primary pull-right outer-right-xs"><i class="glyphicon glyphicon-edit"></i></a> -->
+					  <input type="submit" name="update" value="Update" class="btn btn-upper btn-primary pull-right outer-right-xs">
 					</td>
 				</tr>
 
@@ -400,19 +359,30 @@ echo "Your shopping Cart is empty";
 
 	<!-- For demo purposes – can be removed on production -->
 	
-	<script src="switchstylesheet/switchstylesheet.js"></script>
-	
 	<script>
-		$(document).ready(function(){ 
+		/*$(document).ready(function(){ 
 			$(".changecolor").switchstylesheet( { seperator:"color"} );
 			$('.show-theme-options').click(function(){
 				$(this).parent().toggleClass('open');
 				return false;
 			});
 		});
-
+		*/
 		$(window).bind("load", function() {
 		   $('.show-theme-options').delay(2000).trigger('click');
+		});
+		$('.chg').change(function(){
+			var id = $(this).attr('data-id');
+			var qty = $(this).val();
+			var prc = parseInt($(this).attr('data-up'));
+			var sh = parseInt($(this).attr('data-sh'));
+			idp = id.slice(2);
+			$('#tr'+id+' .cart-grand-total-price').text((prc*qty)+sh);
+			var up = 0;
+			$('.cart-grand-total-price').each(function(){
+				up = up + parseInt($(this).text()); 
+			});
+			$('.cart-grand-total span').text(up);
 		});
 	</script>
 	<!-- For demo purposes – can be removed on production : End -->

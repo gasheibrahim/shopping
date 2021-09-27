@@ -60,7 +60,7 @@ if(!empty($_SESSION['cart'])){
 				<div class="basket-item-count"><span class="count"><?php echo $_SESSION['qnty'];?></span></div>
 			
 		    </div>
-		</a>
+		</a> 
 		<ul class="dropdown-menu">
 		
 		 <?php
